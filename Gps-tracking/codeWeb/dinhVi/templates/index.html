@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Định vị</title>
+    <link rel="stylesheet" href="static/style/style.css" />
+    <link rel="base" href="app.py" />
+    <script
+      src="https://kit.fontawesome.com/3d30fbccd8.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  />
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"
+  ></script>
+  </head>
+
+  <body style="background-color: #1c2838;">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light"  style="text-align: center;">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="http://gpsoto.ddns.net:80/">Home</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active two" aria-current="page" href="http://118.70.87.5:3000/">Toyota Carmy 2024</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active one" aria-current="page"  href="http://118.70.87.5:3002/" target="_blank">Định vị</a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link active" aria-current="page"  href="http://118.70.87.5:3003/">Lịch sử</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active two" aria-current="page"  href="http://118.70.87.5:3004/">Thông tin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active diagnostic" aria-current="page"  href="#">Chuẩn đoán</a>
+            </li>
+        </div>
+      </div>
+    </nav>
+    <center>
+      <div id="telemetry-data">
+        <!-- //////////////////////////////////////// -->
+        <div class="info_location">
+          <h2>Thông tin về vị trí xe:</h2>
+          <p id="longitude">Kinh độ:</p>
+          <p id="latitude">Vĩ độ:</p>
+            <p id="speed">Vận tốc:</p>
+          <p id="time">Thời gian:</p>
+          <p id="status">Trạng thái của cảm biến:</p>
+        </div>
+
+        <button class="map">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <a id="google-map-link" href="googleMapLink" class="link" target="_blank">
+            Tìm kiếm vị trí
+          </a>
+        </button>
+      </div>
+    </center>
+
+    <!-- //////////////////////////////////////// -->
+
+    <!-- //////////////////////////////////////// -->
+
+    <!-- //////////////////////////////////////// -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+    <script>
+      //real time
+      document.querySelector(".diagnostic").addEventListener('click', function(){
+        confirm("Xin lỗi bạn mảng này công ty chúng tôi đang trong quá trình phát triển :<<< ");
+      });
+      function displayRealTime() {
+        // Tạo một đối tượng Date mới
+        let currentTime = new Date();
+
+        // Lấy thông tin về giờ, phút, giây
+        let hours = currentTime.getHours();
+        let minutes = currentTime.getMinutes();
+        let seconds = currentTime.getSeconds();
+
+        // Định dạng thời gian để hiển thị
+        let formattedTime = `${hours.toString().padStart(2, "0")}:${minutes
+          .toString()
+          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+        // Hiển thị trên trang web
+        document.getElementById("time").innerText =
+          "Thời gian: " + formattedTime;
+      }
+
+      setInterval(displayRealTime, 1000);
+
+      displayRealTime();
+
+      const socket = io.connect("http://118.70.87.5:3002/");
+      socket.on("connect", () => {
+        console.log("WebSocket connected");
+      });
+
+      socket.on("telemetry_data", (data) => {
+        const longitude = data.longitude;
+        const latitude = data.latitude;
+        const status = data.status;
+        const speed = data.speed;
+        document.getElementById("latitude").innerText = "Vĩ độ: " + latitude;
+        document.getElementById("longitude").innerText =
+          "Kinh độ: " + longitude;
+        document.getElementById("status").innerText = " Trạng Thái: " + status;
+        document.getElementById(`speed`).innerText = "Vận tốc: " + speed;
+        updateGoogleMapLink(latitude, longitude);
+      });
+
+      setInterval(() => {
+        socket.emit("telemetry_update");
+      }, 1000);
+
+      function updateGoogleMapLink(latitude, longitude) {
+        const googleMapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        const googleMapLink = document.getElementById("google-map-link");
+        googleMapLink.href = googleMapUrl;
+        googleMapLink.textContent = "Tìm kiếm vị trí";
+      }
+
+      // Hàm định dạng lại ngày tháng năm
+      function formatDate(inputDate) {
+        const date = new Date(inputDate);
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
+      }
+
+      // Hàm định dạng lại thời gian
+      function formatTime(inputTime) {
+        const timeParts = inputTime.split(":");
+        const hours = parseInt(timeParts[0]);
+        const minutes = parseInt(timeParts[1]);
+        const seconds = parseInt(timeParts[2]);
+
+        // Định dạng giờ
+        const formattedHours = hours.toString().padStart(2, "0");
+
+        return `${formattedHours}:${minutes
+          .toString()
+          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+      }
+
+      // Hàm định dạng lại ngày giờ
+      function formatDateTime(dateTimeString) {
+        const dateTime = new Date(dateTimeString);
+        const formattedDate = formatDate(dateTime);
+        const formattedTime = formatTime(dateTime.toTimeString().split(" ")[0]);
+
+        return `${formattedDate} ${formattedTime}`;
+      }
+
+      // Xử lý sự kiện khi nhấn nút tìm kiếm vị trí
+      const searchButton = document.getElementById("google-map-link");
+
+      searchButton.onclick = function () {
+        // Lấy thông tin vĩ độ và kinh độ từ dữ liệu hiện tại
+        const latitude = document
+          .getElementById("latitude")
+          .innerText.split(": ")[1];
+        const longitude = document
+          .getElementById("longitude")
+          .innerText.split(": ")[1];
+
+        // Lấy ngày và giờ hiện tại
+        const now = new Date();
+        const dateTime = now.toISOString();
+        const date = formatDate(now);
+        const time = formatTime(dateTime.split("T")[1].slice(0, 8));
+
+        // Tạo đối tượng lịch sử tìm kiếm
+        const searchHistory = {
+          dateTime: dateTime,
+          latitude: latitude,
+          longitude: longitude,
+          googleMapUrl: `https://www.google.com/maps?q=${latitude},${longitude}`,
+        };
+
+        // Định dạng lại thời gian trong đối tượng searchHistory
+        searchHistory.dateTime = formatDateTime(searchHistory.dateTime);
+
+        // Gửi sự kiện 'searchHistory'
+        socket.emit("searchHistory", searchHistory);
+      };
+      /*
+
+        socket.on('connect', function () {
+            console.log('Connected to server');
+            socket.emit('get_data');
+        });
+
+        socket.on('data', function (response) {
+            const tableData = response.table;
+            const tableElement = document.getElementById('table-data');
+
+            // Thay thế các đường dẫn URL trong tableData thành các thẻ <a>
+            const tableDataWithLinks = tableData.replace(/(https:\/\/www\.google\.com\/maps\?q=[^ ]+)/g, '<a href="$1" target="_blank">$1</a>');
+
+            // Thiết lập nội dung của phần tử bảng
+            tableElement.innerHTML = tableDataWithLinks;
+        });
+*/
+    </script>
+  </body>
+</html>

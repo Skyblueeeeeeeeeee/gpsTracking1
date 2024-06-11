@@ -1,0 +1,166 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+}
+
+body {
+    background-color: #1c2838;
+
+}
+
+.container1 {
+    display: grid;
+    grid-template-columns: 1fr 700px 1fr;
+    place-items: center;
+    background-color: rgb(256, 236, 164)
+}
+
+.camry_2024 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.car-info {
+    font-size: 18px;
+    color: white;
+
+}
+
+.header1,
+.header2 {
+    width: 100%;
+    text-align: center;
+    font-size: 25px;
+    color: red;
+    font-weight: 900;
+    /* Add padding for better readability */
+}
+
+.imglogo {
+    border-radius: 50%;
+    margin: 10px;
+    background-color: transparent;
+    /* Đặt màu nền của ảnh thành trong suốt */
+    object-fit: cover;
+    /* Đảm bảo ảnh không bị biến dạng khi cắt */
+}
+
+.grid1 {
+    display: grid;
+    grid-template-columns: 0.5fr 0.5fr;
+    max-width: 414px;
+    font-size: 18px;
+    grid-gap: 0;
+    margin: 10px;
+}
+
+
+
+.container-option1 {
+    display: grid;
+    grid-template-columns: 0.5fr 0.5fr;
+    max-width: 414px;
+    font-size: 18px;
+    grid-gap: 5px;
+}
+
+.container-option1 div {
+    padding: 0;
+}
+
+.container-option1 i {
+    color: aqua;
+}
+
+
+.container-option1 a {
+    text-decoration: none;
+    color: white;
+    padding: 10px;
+    display: inline-block;
+    width: 206px;
+    background-color: rgba(255, 255, 255, 0.205);
+
+}
+
+.one{
+   font-size: 22px !important;
+}
+
+@media only screen and (max-width: 600px) {
+    .container1 {
+        display: grid;
+        grid-template-columns: 0.5fr 0.5fr;
+        place-items: center;
+    }
+
+    .logokhoa {
+        grid-column: 2;
+        grid-row: 1;
+
+    }
+
+    .camry_2024 {
+        width: 100%;
+        height: auto;
+    }
+    .one{
+        background-color: rgb(187, 213, 236) !important;
+    }
+    .two{
+        background-color: rgb(228, 236, 243) !important;
+    }
+    .header {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        padding: 0 20px 20px 20px;
+    }
+
+    .logokhoa,
+    .logotruong {
+        width: 100px;
+        height: 100px;
+        display: block;
+        margin: 20px;
+    }
+
+    .header1,
+    .header2 {
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+        color: red;
+        font-weight: 900;
+        /* Add padding for better readability */
+    }
+
+    .container-option1 {
+        display: grid;
+        grid-template-columns: 0.5fr 0.5fr;
+        place-items: center;
+    }
+
+    .container-option1 a {
+        margin: 10px;
+        width: 170px;
+     
+    }
+}
+
+@media only screen and (min-width: 600px) and (max-width: 900px) {
+    .container1 {
+        display: grid;
+        grid-template-columns: 1fr 700px 1fr;
+        place-items: center;
+        background-color: rgb(256, 236, 164);
+    }
+    .one{
+        background-color: rgb(187, 213, 236) !important;
+    }
+    .two{
+        background-color: rgb(228, 236, 243) !important;
+    }
+}
